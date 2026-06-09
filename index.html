@@ -1,0 +1,1368 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>研发战场生存指南</title>
+  <style>
+    :root {
+      --bg: #07080b;
+      --panel: #11141a;
+      --panel-2: rgba(23, 27, 34, .88);
+      --orange: #ff6b00;
+      --gold: #ffc247;
+      --red: #ff3b2f;
+      --green: #36d67a;
+      --teal: #22d3c5;
+      --text: #f5efe2;
+      --muted: #a9a395;
+      --dim: #777f8b;
+      --line: rgba(255, 194, 71, .34);
+      --white-line: rgba(255, 255, 255, .14);
+      --shadow: 0 24px 80px rgba(0, 0, 0, .42);
+      --cut: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; background: var(--bg); }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
+      background:
+        radial-gradient(circle at 78% 10%, rgba(255, 107, 0, .18), transparent 32%),
+        radial-gradient(circle at 28% 18%, rgba(255, 59, 47, .14), transparent 28%),
+        linear-gradient(180deg, #111821 0%, #07080b 52%, #130c08 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .26;
+      background-image:
+        linear-gradient(rgba(255, 194, 71, .08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 194, 71, .08) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(180deg, #000, transparent 88%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .08;
+      background:
+        repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.7) 4px);
+      mix-blend-mode: screen;
+    }
+
+    body.loading { overflow: hidden; }
+    body.loading .nav, body.loading main { opacity: 0; pointer-events: none; }
+    body.loaded .nav, body.loaded main { opacity: 1; transition: opacity .55s ease; }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; }
+    h1, h2, h3, p { margin-top: 0; }
+
+    .drop-intro {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(255, 107, 0, .25), transparent 30%),
+        linear-gradient(180deg, #121923 0%, #080a0d 72%, #1f0e08 100%);
+      transition: opacity .5s ease, visibility .5s ease;
+    }
+
+    body.loaded .drop-intro { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .drop-card {
+      width: min(680px, 100%);
+      padding: 34px;
+      border: 1px solid var(--line);
+      background: rgba(12, 15, 21, .86);
+      clip-path: var(--cut);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .crate-icon {
+      position: relative;
+      width: 132px;
+      height: 92px;
+      margin: 0 auto 22px;
+      border: 2px solid rgba(255, 194, 71, .78);
+      background: linear-gradient(180deg, #6e3512, #21120c);
+      box-shadow: 0 0 36px rgba(255, 107, 0, .34);
+      animation: crateDrop 1.15s ease both;
+    }
+
+    .crate-icon::before {
+      content: "";
+      position: absolute;
+      left: -10px;
+      right: -10px;
+      top: -22px;
+      height: 24px;
+      border: 2px solid rgba(255, 194, 71, .78);
+      background: #351b10;
+      transform-origin: bottom left;
+      animation: crateLid 1.6s .65s ease both;
+    }
+
+    .drop-card h2 {
+      margin-bottom: 10px;
+      color: var(--gold);
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1;
+    }
+
+    .drop-card p {
+      margin-bottom: 20px;
+      color: #eadfc8;
+      font-size: 18px;
+    }
+
+    .countdown {
+      display: grid;
+      place-items: center;
+      height: 78px;
+      color: #fff5c7;
+      font-size: 64px;
+      font-weight: 1000;
+      text-shadow: 0 0 28px rgba(255, 107, 0, .58);
+    }
+
+    .countdown span {
+      grid-area: 1 / 1;
+      opacity: 0;
+      transform: scale(.72);
+      animation: countPop .78s ease both;
+    }
+
+    .countdown span:nth-child(2) { animation-delay: .82s; }
+    .countdown span:nth-child(3) { animation-delay: 1.64s; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(7, 8, 11, .86);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 34px auto;
+      gap: 10px;
+      align-items: center;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, var(--red), var(--orange));
+      color: #160b05;
+      clip-path: var(--cut);
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .nav-links a {
+      min-height: 34px;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible,
+    .btn:focus-visible,
+    .class-card:focus-visible,
+    .stage-pin:focus-visible,
+    .crate button:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+      border-color: var(--gold);
+    }
+
+    .section {
+      position: relative;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 58px 28px;
+    }
+
+    .hero {
+      min-height: calc(100vh - 56px);
+      display: grid;
+      grid-template-columns: minmax(0, .45fr) minmax(520px, .55fr);
+      gap: 22px;
+      align-items: stretch;
+      padding-top: 18px;
+      padding-bottom: 24px;
+    }
+
+    .hero-hud,
+    .tactical-map,
+    .panel,
+    .crate,
+    .stage-detail,
+    .mission,
+    .class-card,
+    .final-panel {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      box-shadow: var(--shadow);
+      clip-path: var(--cut);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-hud {
+      display: grid;
+      grid-template-rows: auto auto auto 1fr auto;
+      gap: 12px;
+      min-height: 600px;
+      padding: 24px;
+      animation: enterLeft .7s ease both;
+    }
+
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 1000;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(44px, 5.8vw, 84px);
+      line-height: .88;
+      letter-spacing: 0;
+    }
+
+    h1 span {
+      display: block;
+      color: var(--gold);
+      font-size: clamp(36px, 4.6vw, 64px);
+      text-shadow: 0 0 32px rgba(255, 107, 0, .36);
+    }
+
+    .hero-lead {
+      max-width: 560px;
+      margin-bottom: 0;
+      color: #eadfc8;
+      font-size: 17px;
+      line-height: 1.62;
+    }
+
+    .hud-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .hud-cell,
+    .current-mission {
+      border: 1px solid var(--white-line);
+      background: rgba(255,255,255,.055);
+      clip-path: var(--cut);
+    }
+
+    .hud-cell {
+      min-height: 70px;
+      padding: 12px;
+    }
+
+    .hud-cell span,
+    .current-mission span,
+    .map-card span,
+    .reward,
+    .stage-time {
+      display: block;
+      color: var(--dim);
+      font-size: 11px;
+      font-weight: 1000;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .hud-cell strong {
+      display: block;
+      margin-top: 7px;
+      color: #fff7df;
+      font-size: 15px;
+      line-height: 1.3;
+    }
+
+    .status-live {
+      color: var(--green) !important;
+      text-shadow: 0 0 16px rgba(54, 214, 122, .45);
+      animation: blink 1.6s ease-in-out infinite;
+    }
+
+    .current-mission {
+      padding: 14px;
+    }
+
+    .current-mission p {
+      margin: 6px 0 12px;
+      color: #eadfc8;
+      line-height: 1.55;
+    }
+
+    .exp-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 1000;
+    }
+
+    .exp-track {
+      height: 10px;
+      overflow: hidden;
+      background: rgba(255,255,255,.12);
+      clip-path: var(--cut);
+    }
+
+    .exp-track div {
+      height: 100%;
+      width: 18%;
+      background: linear-gradient(90deg, var(--red), var(--orange), var(--gold));
+      animation: expLoad 1.3s .45s ease both;
+    }
+
+    .cta-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .btn {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 14px;
+      border: 1px solid var(--white-line);
+      background: rgba(255, 255, 255, .07);
+      clip-path: var(--cut);
+      cursor: pointer;
+      font-weight: 1000;
+      text-align: center;
+      transition: transform .18s ease, border-color .18s ease, filter .18s ease;
+    }
+
+    .btn.primary {
+      border-color: rgba(255, 194, 71, .78);
+      background: linear-gradient(135deg, var(--red), var(--orange));
+      color: #170b04;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--gold);
+      filter: brightness(1.08);
+    }
+
+    .tactical-map {
+      position: relative;
+      min-height: 600px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 68% 26%, rgba(255, 107, 0, .18), transparent 26%),
+        linear-gradient(180deg, #17202a, #0a0f14);
+      animation: enterRight .8s ease both;
+    }
+
+    .tactical-map::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .4;
+      background-image:
+        linear-gradient(rgba(255,194,71,.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,194,71,.12) 1px, transparent 1px);
+      background-size: 42px 42px;
+    }
+
+    .scan-line {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(255, 194, 71, .12), transparent);
+      transform: translateX(-100%);
+      animation: scanSweep 4.8s ease-in-out infinite;
+    }
+
+    .map-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .radar-ring {
+      position: absolute;
+      right: 40px;
+      top: 36px;
+      width: 180px;
+      height: 180px;
+      border: 1px solid rgba(34, 211, 197, .35);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(34,211,197,.2) 0 3px, transparent 4px),
+        repeating-radial-gradient(circle, transparent 0 28px, rgba(34,211,197,.18) 29px 30px);
+    }
+
+    .radar-ring::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, rgba(34,211,197,.58), transparent 35%);
+      animation: radarSpin 3s linear infinite;
+    }
+
+    .coord {
+      position: absolute;
+      color: rgba(245, 239, 226, .46);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .coord.a { left: 24px; top: 22px; }
+    .coord.b { right: 28px; bottom: 22px; }
+
+    .stage-pin {
+      position: absolute;
+      display: grid;
+      width: 78px;
+      height: 78px;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: rgba(10, 13, 18, .82);
+      clip-path: var(--cut);
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, filter .18s ease;
+      animation: stageBreath 2.6s ease-in-out infinite;
+    }
+
+    .stage-pin:hover,
+    .stage-pin.active {
+      transform: translateY(-4px) scale(1.03);
+      border-color: var(--gold);
+      filter: drop-shadow(0 0 18px rgba(255, 194, 71, .34));
+    }
+
+    .stage-pin b {
+      color: #fff;
+      font-size: 18px;
+      text-shadow: 0 0 16px rgba(0,0,0,.75);
+    }
+
+    .pin-1 { left: 9%; bottom: 19%; --pin: var(--red); }
+    .pin-2 { left: 34%; bottom: 34%; --pin: var(--orange); }
+    .pin-3 { right: 30%; top: 26%; --pin: var(--teal); }
+    .pin-4 { right: 9%; top: 15%; --pin: var(--gold); }
+
+    .stage-pin::before {
+      content: "";
+      position: absolute;
+      inset: 11px;
+      z-index: -1;
+      background: var(--pin);
+      clip-path: var(--cut);
+    }
+
+    .map-card {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: rgba(8, 10, 14, .86);
+      clip-path: var(--cut);
+    }
+
+    .map-card h3 {
+      margin: 7px 0;
+      color: var(--gold);
+      font-size: 26px;
+      line-height: 1.05;
+    }
+
+    .map-card p {
+      margin-bottom: 0;
+      color: #eadfc8;
+      line-height: 1.55;
+    }
+
+    .map-meta {
+      min-width: 210px;
+      display: grid;
+      gap: 9px;
+      color: #fff7df;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .map-meta div {
+      border-left: 3px solid var(--gold);
+      padding-left: 10px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 58px);
+      line-height: 1;
+    }
+
+    .section-head p {
+      max-width: 720px;
+      margin-bottom: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .supply {
+      padding-top: 48px;
+    }
+
+    .supply-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .crate {
+      position: relative;
+      min-height: 250px;
+      padding: 20px;
+      border-top: 5px solid var(--gold);
+      background:
+        linear-gradient(135deg, rgba(255, 194, 71, .13), transparent 32%),
+        var(--panel-2);
+      transition: transform .18s ease, border-color .18s ease, filter .18s ease;
+    }
+
+    .crate:hover {
+      transform: translateY(-5px);
+      border-color: var(--orange);
+      filter: drop-shadow(0 0 22px rgba(255,107,0,.22));
+    }
+
+    .crate::before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 18px;
+      height: 20px;
+      border: 1px solid rgba(255,194,71,.32);
+      background: rgba(255,194,71,.08);
+      transform: skewX(-18deg);
+    }
+
+    .crate h3 {
+      margin: 48px 0 10px;
+      color: #fff4cd;
+      font-size: 23px;
+      line-height: 1.16;
+    }
+
+    .crate p {
+      color: #e2d6be;
+      line-height: 1.62;
+    }
+
+    .crate button {
+      position: absolute;
+      left: 20px;
+      bottom: 18px;
+      min-height: 38px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,194,71,.1);
+      color: var(--gold);
+      clip-path: var(--cut);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 1000;
+    }
+
+    .stage-section {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 18px;
+      align-items: start;
+      padding-top: 34px;
+      padding-bottom: 34px;
+    }
+
+    .stage-detail {
+      position: sticky;
+      top: 72px;
+      padding: 22px;
+      border-left: 6px solid var(--accent);
+    }
+
+    .stage-detail h2 {
+      margin-bottom: 10px;
+      font-size: clamp(28px, 3.2vw, 48px);
+      line-height: 1.02;
+    }
+
+    .stage-detail p {
+      color: #e5d8c0;
+      line-height: 1.68;
+    }
+
+    .complete {
+      margin-top: 14px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      background: rgba(255,194,71,.08);
+      color: #fff1c8;
+      line-height: 1.55;
+      clip-path: var(--cut);
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mission {
+      min-height: 230px;
+      padding: 18px;
+      border-top: 4px solid var(--accent);
+    }
+
+    .mission small {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 1000;
+    }
+
+    .mission h3 {
+      margin: 12px 0 10px;
+      font-size: 23px;
+      line-height: 1.12;
+    }
+
+    .mission p {
+      color: #dfd3bb;
+      line-height: 1.62;
+    }
+
+    .reward {
+      margin-top: 14px;
+      color: var(--gold);
+    }
+
+    .event {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 180px;
+      gap: 16px;
+      align-items: center;
+      padding: 16px;
+      border: 1px solid rgba(255,107,0,.45);
+      background: rgba(255,107,0,.1);
+      clip-path: var(--cut);
+    }
+
+    .radar {
+      position: relative;
+      width: 132px;
+      height: 132px;
+      justify-self: center;
+      border: 1px solid rgba(34,211,197,.4);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(34,211,197,.2) 0 3px, transparent 4px),
+        repeating-radial-gradient(circle, transparent 0 24px, rgba(34,211,197,.18) 25px 26px);
+    }
+
+    .radar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, rgba(34,211,197,.58), transparent 34%);
+      animation: radarSpin 2.8s linear infinite;
+    }
+
+    .class-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .class-card {
+      min-height: 350px;
+      padding: 19px;
+      border-top: 4px solid var(--accent);
+      cursor: pointer;
+      text-align: left;
+      transition: transform .18s ease, border-color .18s ease, filter .18s ease;
+    }
+
+    .class-card:hover,
+    .class-card.selected {
+      transform: translateY(-4px);
+      border-color: var(--gold);
+      filter: drop-shadow(0 0 18px rgba(255, 194, 71, .2));
+    }
+
+    .badge {
+      display: inline-flex;
+      min-height: 26px;
+      align-items: center;
+      padding: 5px 8px;
+      border: 1px solid var(--white-line);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 1000;
+    }
+
+    .class-card h3 {
+      margin: 16px 0 8px;
+      font-size: 26px;
+      line-height: 1.06;
+    }
+
+    .class-card h3 span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .class-card p {
+      color: #e0d5bd;
+      line-height: 1.6;
+    }
+
+    .skill-tree {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 16px;
+    }
+
+    .skill-tree span {
+      padding: 6px 8px;
+      border: 1px solid var(--white-line);
+      background: rgba(255,255,255,.05);
+      color: #f3e8ce;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .final {
+      padding-bottom: 90px;
+    }
+
+    .final-panel {
+      padding: 44px;
+      border-left: 7px solid var(--gold);
+      background:
+        linear-gradient(135deg, rgba(255,194,71,.18), transparent 32%),
+        linear-gradient(225deg, rgba(255,59,47,.16), transparent 36%),
+        rgba(16, 19, 25, .94);
+    }
+
+    .final-panel h2 {
+      margin-bottom: 16px;
+      color: var(--gold);
+      font-size: clamp(44px, 7vw, 94px);
+      line-height: .9;
+      animation: impact 1.7s ease-in-out infinite;
+    }
+
+    .final-panel p {
+      max-width: 980px;
+      color: #eee1c8;
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .fade-up {
+      animation: fadeUp .7s ease both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 28%;
+    }
+
+    @keyframes crateDrop {
+      from { opacity: 0; transform: translateY(-60px) scale(.92); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes crateLid {
+      0% { transform: rotate(0deg); }
+      48% { transform: rotate(-12deg); }
+      100% { transform: rotate(-7deg); }
+    }
+
+    @keyframes countPop {
+      0% { opacity: 0; transform: scale(.65); }
+      30% { opacity: 1; transform: scale(1.1); }
+      72% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.3); }
+    }
+
+    @keyframes enterLeft {
+      from { opacity: 0; transform: translateX(-24px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes enterRight {
+      from { opacity: 0; transform: translateX(24px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes expLoad {
+      from { width: 0; }
+      to { width: 18%; }
+    }
+
+    @keyframes scanSweep {
+      0%, 45% { transform: translateX(-110%); }
+      70%, 100% { transform: translateX(110%); }
+    }
+
+    @keyframes stageBreath {
+      0%, 100% { box-shadow: 0 0 0 rgba(255,194,71,0); }
+      50% { box-shadow: 0 0 22px rgba(255,194,71,.22); }
+    }
+
+    @keyframes radarSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .68; }
+    }
+
+    @keyframes impact {
+      0%, 100% { text-shadow: 0 0 0 rgba(255,194,71,0); transform: scale(1); }
+      50% { text-shadow: 0 0 28px rgba(255,107,0,.44); transform: scale(1.012); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .hero,
+      .stage-section {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-hud,
+      .tactical-map {
+        min-height: auto;
+      }
+
+      .tactical-map {
+        min-height: 560px;
+      }
+
+      .supply-grid,
+      .class-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .mission-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stage-detail {
+        position: static;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 10px 16px;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+
+      .section {
+        padding: 44px 16px;
+      }
+
+      .hero {
+        padding-top: 12px;
+      }
+
+      .hero-hud {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      h1 span {
+        font-size: 34px;
+      }
+
+      .hud-grid,
+      .cta-row,
+      .supply-grid,
+      .mission-grid,
+      .class-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tactical-map {
+        min-height: 620px;
+      }
+
+      .stage-pin {
+        width: 64px;
+        height: 64px;
+      }
+
+      .map-card {
+        grid-template-columns: 1fr;
+      }
+
+      .map-meta {
+        min-width: 0;
+      }
+
+      .event {
+        grid-template-columns: 1fr;
+      }
+
+    }
+  </style>
+</head>
+<body class="loading">
+  <div class="drop-intro" aria-label="着陆准备动画">
+    <div class="drop-card">
+      <div class="crate-icon" aria-hidden="true"></div>
+      <h2>物资已集齐</h2>
+      <p>准备着陆研发战场</p>
+      <div class="countdown" aria-label="倒计时"><span>3</span><span>2</span><span>1</span></div>
+    </div>
+  </div>
+
+  <nav class="nav" aria-label="页面导航">
+    <a class="brand" href="#entry" aria-label="回到首页">
+      <span class="brand-mark">G</span>
+      <span>GARENA ROOKIE OPS<small>研发战场</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="#entry" title="首页">HOME</a>
+      <a href="#supply" title="补给中心">SUPPLY</a>
+      <a href="#stages" title="任务地图">MISSION MAP</a>
+      <a href="#classes" title="职业选择">CLASS</a>
+      <a href="#final" title="最终挑战">BOSS FIGHT</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="section hero" id="entry">
+      <div class="hero-hud">
+        <div>
+          <p class="eyebrow">ROOKIE SEASON 2026</p>
+          <h1>研发战场<span>生存指南</span></h1>
+          <p class="hero-lead">从校园玩家，到下一位主策、主美、主程、产品负责人。你的 180 天主线任务已经开启。</p>
+        </div>
+
+        <div class="hud-grid compact" aria-label="新人身份面板">
+          <div class="hud-cell"><span>PLAYER ID</span><strong>2026 研发校招新人</strong></div>
+          <div class="hud-cell"><span>SEASON PROGRESS</span><strong>Day 1 / Day 180</strong></div>
+          <div class="hud-cell"><span>CURRENT STATUS</span><strong class="status-live">MISSION ACTIVE</strong></div>
+        </div>
+
+        <div class="current-mission">
+          <span>CURRENT MISSION</span>
+          <p>完成首次降落，领取新人补给包，并与 Buddy / Mentor 完成战队集结。</p>
+          <span>NEXT OBJECTIVE</span>
+          <p>入职后 30 天：完成局内状态扫描，确认哪里顺利、哪里卡住。</p>
+          <div class="exp-row"><b>EXP 320 / 1800</b><b>LV.01</b></div>
+          <div class="exp-track" aria-label="经验进度"><div></div></div>
+        </div>
+
+        <div class="cta-row">
+          <a class="btn primary" href="#stages">ENTER MISSION<br>开始任务</a>
+          <a class="btn" href="#supply">CLAIM SUPPLY CRATE<br>领取补给包</a>
+        </div>
+      </div>
+
+      <div class="tactical-map" aria-label="战术关卡地图">
+        <svg class="map-svg" viewBox="0 0 760 620" role="img" aria-label="四阶段战术地图">
+          <defs>
+            <linearGradient id="land" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#24303d"></stop>
+              <stop offset="48%" stop-color="#121a22"></stop>
+              <stop offset="100%" stop-color="#28130c"></stop>
+            </linearGradient>
+            <linearGradient id="flight" x1="0" x2="1">
+              <stop offset="0%" stop-color="#ff3b2f"></stop>
+              <stop offset="52%" stop-color="#ffc247"></stop>
+              <stop offset="100%" stop-color="#22d3c5"></stop>
+            </linearGradient>
+          </defs>
+          <rect width="760" height="620" fill="url(#land)"></rect>
+          <path d="M0 486 L92 386 L170 420 L252 314 L355 355 L468 252 L595 282 L760 168 L760 620 L0 620 Z" fill="#183225" opacity=".9"></path>
+          <path d="M0 536 L128 474 L226 512 L360 430 L482 490 L610 398 L760 358 L760 620 L0 620 Z" fill="#244538" opacity=".94"></path>
+          <path d="M70 458 C162 332, 244 390, 338 260 S512 190, 648 112" fill="none" stroke="url(#flight)" stroke-width="6" stroke-dasharray="18 12"></path>
+          <g fill="rgba(0,0,0,.42)">
+            <path d="M112 340 h80 v34 h-80z"></path>
+            <path d="M430 232 h90 v38 h-90z"></path>
+            <path d="M290 400 h102 v30 h-102z"></path>
+          </g>
+          <path d="M604 88 l96 18 -36 26 14 48 -38 -30 -44 26 18 -50z" fill="#ffc247" opacity=".86"></path>
+        </svg>
+        <div class="scan-line"></div>
+        <div class="radar-ring" aria-hidden="true"></div>
+        <div class="coord a">GRID A-07 / DROP ZONE</div>
+        <div class="coord b">RADAR ONLINE / 180D</div>
+        <button class="stage-pin pin-1" data-stage="0" type="button"><b>01</b></button>
+        <button class="stage-pin pin-2 active" data-stage="1" type="button"><b>02</b></button>
+        <button class="stage-pin pin-3" data-stage="2" type="button"><b>03</b></button>
+        <button class="stage-pin pin-4" data-stage="3" type="button"><b>04</b></button>
+        <article class="map-card" id="mapCard"></article>
+      </div>
+    </section>
+
+    <section class="section supply fade-up" id="supply">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">ROOKIE SUPPLY CENTER</p>
+          <h2>新人作战档案补给区 #2026</h2>
+        </div>
+        <p>FF 项目介绍补给包已空投。这里汇总了新人快速进入战斗状态所需的职能介绍、专业训练资料、研发流程材料与项目知识。</p>
+      </div>
+      <div class="supply-grid" id="supplyGrid"></div>
+    </section>
+
+    <div id="stages"></div>
+    <section class="section stage-section fade-up" id="stage-01" style="--accent:#ff3b2f"></section>
+    <section class="section stage-section fade-up" id="stage-02" style="--accent:#ff6b00"></section>
+    <section class="section stage-section fade-up" id="stage-03" style="--accent:#22d3c5"></section>
+    <section class="section stage-section fade-up" id="stage-04" style="--accent:#ffc247"></section>
+
+    <section class="section fade-up" id="classes">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">CHOOSE YOUR CLASS</p>
+          <h2>选择你的研发职业身份</h2>
+        </div>
+        <p>不同岗位有不同打法。选择你的职业身份，查看技能树和未来路径。</p>
+      </div>
+      <div class="class-grid" id="classGrid"></div>
+    </section>
+
+    <section class="section final fade-up" id="final">
+      <div class="final-panel">
+        <p class="eyebrow">THE NEXT LEGEND STARTS HERE</p>
+        <h2>BOOYAH.</h2>
+        <p>下一位主策、主美、主程、产品负责人，或许就在这里诞生。</p>
+        <p>180 天不是终点，而是你成为 Garena 核心研发战力的起点。</p>
+        <a class="btn primary" href="#entry">ENTER THE NEXT SEASON</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const stageData = [
+      {
+        id: "STAGE 01",
+        cn: "备战准备区",
+        en: "Prepare for Drop",
+        status: "UNLOCKED",
+        time: "入职当天",
+        reward: "Starter Access +100 EXP",
+        map: "完成装备补给与身份激活，领取属于你的新兵补给。",
+        next: "领取作战装备",
+        accent: "#ff3b2f",
+        missions: [
+          ["探索 Garena 宇宙", "快速了解 Garena 在做什么、项目怎么玩、团队怎么协作。", "+100 EXP"],
+          ["领取作战装备", "完成 IT 设备、账号权限、工牌与办公系统配置。", "装备补给箱"],
+          ["查看战场情报", "知道团队在哪、资料在哪、遇到问题先找谁。", "研发战场通行证"]
+        ]
+      },
+      {
+        id: "STAGE 02",
+        cn: "跳伞着陆",
+        en: "Landing Zone",
+        status: "ACTIVE",
+        time: "入职后 1周 / 30天",
+        reward: "Squad Badge +300 EXP",
+        map: "在这里，你将集结队友、解锁导师，完成新手训练营。",
+        next: "入职后30天：完成局内状态扫描",
+        accent: "#ff6b00",
+        missions: [
+          ["战队集结", "与 Buddy / Mentor 完成首次会面。时间：入职后 1 周。", "Squad Badge"],
+          ["新手训练营", "完成新人基础训练，跑通工具、流程和沟通方式。", "Skill Tree Activated"],
+          ["局内状态检查", "用几分钟记录自己是否适应、哪里卡住、还需要什么帮助。", "Radar Scan Complete"]
+        ]
+      },
+      {
+        id: "STAGE 03",
+        cn: "丛林实战",
+        en: "Into The Wild",
+        status: "COMING SOON",
+        time: "预计 10月 / 入职3-5个月",
+        reward: "MiniGame Raider Badge",
+        map: "现在，你将正式进入项目实战，与队友共同完成真实研发任务。",
+        next: "MiniGame 创新实战",
+        accent: "#22d3c5",
+        missions: [
+          ["N+1 目标对齐", "和主管对齐接下来要做什么、做到什么程度、什么时候复盘。", "Personal Questline"],
+          ["作业训练", "围绕岗位能力完成一次练习，把训练内容变成真实产出。", "Practice EXP"],
+          ["跨岗位团队副本", "策划、美术、程序、PM 混编组队，从 0 到 1 完成可试玩 Demo。", "Demo Drop"]
+        ]
+      },
+      {
+        id: "STAGE 04",
+        cn: "Booyah 对决",
+        en: "Final Showdown",
+        status: "LOCKED",
+        time: "转正后 / 入职6个月",
+        reward: "Core Developer Path Unlocked",
+        map: "回顾你的成长轨迹，展示你的作品，迎接属于自己的 Booyah 时刻。",
+        next: "Portfolio Boss Fight",
+        accent: "#ffc247",
+        missions: [
+          ["Portfolio 成果掉落", "整理并展示你做过的关键任务、作品、复盘和收获。", "Portfolio Drop"],
+          ["Coaching Session", "和导师聊清楚强项、短板，以及下一阶段怎么打。", "Growth Plan"],
+          ["Booyah 状态检查", "回看 180 天体验：哪些帮助最大、哪里还卡、接下来想怎么成长。", "Next Season"]
+        ]
+      }
+    ];
+
+    const supplies = [
+      ["职能成长地图", "了解策划 / 美术 / 程序 / PM 的岗位能力、协作方式与成长路径。"],
+      ["专业训练资料库", "获取岗位专项课程、工具指南、方法论与实践案例。"],
+      ["FF 项目知识库", "快速了解产品背景、玩法结构、版本节奏、研发流程与核心资料。"],
+      ["研发作战工具箱", "查看设计规范、技术文档、协作流程、常用系统入口与 Team Wiki。"]
+    ];
+
+    const roles = [
+      {
+        title: "BATTLE DESIGNER",
+        cn: "游戏策划",
+        tag: "设计规则的人",
+        copy: "你将学习如何拆解玩法、定义体验、设计系统，并把想法变成玩家愿意反复体验的内容。",
+        path: "未来路径：主策划 / 系统策划 / 玩法负责人",
+        accent: "#ff3b2f",
+        skills: ["玩法拆解", "系统设计", "数值意识", "用户体验"]
+      },
+      {
+        title: "WORLD BUILDER",
+        cn: "游戏美术",
+        tag: "创造世界的人",
+        copy: "你将参与角色、场景、视觉风格与资产制作，用美术语言构建玩家记住的世界。",
+        path: "未来路径：主美术 / 角色负责人 / 视觉风格负责人",
+        accent: "#ff6b00",
+        skills: ["视觉表达", "风格统一", "资产生产", "审美判断"]
+      },
+      {
+        title: "SYSTEM ENGINEER",
+        cn: "游戏程序",
+        tag: "驱动战场的人",
+        copy: "你将把设计转化为稳定、流畅、可扩展的游戏系统，支撑真实玩家规模下的体验。",
+        path: "未来路径：主程序 / 客户端负责人 / 技术负责人",
+        accent: "#22d3c5",
+        skills: ["系统实现", "性能意识", "工程协作", "调试能力"]
+      },
+      {
+        title: "PRODUCT COMMANDER",
+        cn: "游戏PM",
+        tag: "统筹全局的人",
+        copy: "你将连接用户、数据、研发与版本节奏，推动团队围绕目标持续交付。",
+        path: "未来路径：产品负责人 / 项目负责人 / 业务负责人",
+        accent: "#ffc247",
+        skills: ["需求判断", "项目推进", "数据意识", "跨团队协作"]
+      }
+    ];
+
+    let selectedStage = 1;
+    let selectedClass = localStorage.getItem("rookie-class") || "";
+
+    window.addEventListener("load", () => {
+      if (window.location.hash) history.replaceState(null, "", window.location.pathname);
+      window.scrollTo(0, 0);
+      window.setTimeout(() => {
+        document.body.classList.remove("loading");
+        document.body.classList.add("loaded");
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }, 2850);
+    });
+
+    function renderMapCard() {
+      const stage = stageData[selectedStage];
+      document.getElementById("mapCard").innerHTML = `
+        <div>
+          <span>${stage.id} ${stage.status}</span>
+          <h3>${stage.cn}<br>${stage.en}</h3>
+          <p>${stage.map}</p>
+        </div>
+        <div class="map-meta">
+          <div><span>TIME NODE</span>${stage.time}</div>
+          <div><span>REWARD</span>${stage.reward}</div>
+        </div>
+      `;
+      document.querySelectorAll(".stage-pin").forEach((pin, index) => {
+        pin.classList.toggle("active", index === selectedStage);
+      });
+    }
+
+    function renderSupplies() {
+      document.getElementById("supplyGrid").innerHTML = supplies.map(([title, copy], index) => `
+        <article class="crate">
+          <span class="reward">SUPPLY CRATE ${String(index + 1).padStart(2, "0")}</span>
+          <h3>${title}</h3>
+          <p>${copy}</p>
+          <button type="button">OPEN CRATE / 打开补给</button>
+        </article>
+      `).join("");
+    }
+
+    function renderStages() {
+      stageData.forEach((stage, index) => {
+        const node = document.getElementById(`stage-0${index + 1}`);
+        node.style.setProperty("--accent", stage.accent);
+        node.innerHTML = `
+          <article class="stage-detail">
+            <p class="eyebrow">${stage.id} ${stage.status}</p>
+            <h2>${stage.cn}<br>${stage.en}</h2>
+            <p class="stage-time">${stage.time}</p>
+            <p>${stage.map}</p>
+          </article>
+          <div class="mission-grid">
+            ${stage.missions.map((mission, missionIndex) => `
+              <article class="mission">
+                <small>MISSION ${String(missionIndex + 1).padStart(2, "0")}</small>
+                <h3>${mission[0]}</h3>
+                <p>${mission[1]}</p>
+              </article>
+            `).join("")}
+            ${index === 2 ? `
+              <div class="event">
+                <div><span class="reward">LIMITED-TIME EVENT</span><h3>MiniGame Raid</h3><p>这不是一次普通作业，而是一场完整的研发小队作战。</p></div>
+                <div class="radar" aria-label="雷达扫描动画"></div>
+              </div>
+            ` : ""}
+          </div>
+        `;
+      });
+    }
+
+    function renderClasses() {
+      document.getElementById("classGrid").innerHTML = roles.map(role => `
+        <button class="class-card ${selectedClass === role.cn ? "selected" : ""}" style="--accent:${role.accent}" onclick="selectClass('${role.cn}')">
+          <span class="badge">${selectedClass === role.cn ? "CLASS SELECTED" : "CLASS CARD"}</span>
+          <h3>${role.title}<span>${role.cn}｜${role.tag}</span></h3>
+          <p>${role.copy}</p>
+          <p>${role.path}</p>
+          <div class="skill-tree">${role.skills.map(skill => `<span>${skill}</span>`).join("")}</div>
+        </button>
+      `).join("");
+    }
+
+    function selectClass(name) {
+      selectedClass = name;
+      localStorage.setItem("rookie-class", name);
+      renderClasses();
+    }
+
+    document.querySelectorAll(".stage-pin").forEach(pin => {
+      pin.addEventListener("mouseenter", () => {
+        selectedStage = Number(pin.dataset.stage);
+        renderMapCard();
+      });
+      pin.addEventListener("click", () => {
+        selectedStage = Number(pin.dataset.stage);
+        renderMapCard();
+      });
+    });
+
+    renderMapCard();
+    renderSupplies();
+    renderStages();
+    renderClasses();
+  </script>
+</body>
+</html>
