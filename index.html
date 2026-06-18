@@ -2898,6 +2898,217 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Visual Unification Pass: shared Free Fire academy atmosphere */
+    :root {
+      --bg: #0A0710;
+      --bg-deep: #0D0914;
+      --panel: rgba(255,255,255,.02);
+      --panel-hover: rgba(255,255,255,.045);
+      --panel-2: rgba(255,255,255,.025);
+      --orange: #FF9A00;
+      --gold: #FFB100;
+      --yellow: #FFD36A;
+      --teal: #19D8FF;
+      --purple: #1A1024;
+      --magenta: #5A244D;
+      --line: rgba(255,255,255,.08);
+      --white-line: rgba(255,255,255,.08);
+      --gradient-bg: linear-gradient(180deg, #0A0710 0%, #0D0914 52%, #0A0710 100%);
+      --gradient-panel:
+        linear-gradient(135deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
+        rgba(255,255,255,.02);
+      --shadow: 0 18px 46px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.035);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 72% 14%, rgba(25,216,255,.08), transparent 28%),
+        radial-gradient(circle at 22% 18%, rgba(255,154,0,.08), transparent 24%),
+        linear-gradient(180deg, rgba(10,7,16,.96), rgba(13,9,20,.98)),
+        #0A0710;
+    }
+
+    body::before {
+      opacity: .08;
+      background:
+        linear-gradient(180deg, rgba(10,7,16,.24), rgba(10,7,16,.82)),
+        url("assets/ff-event-bg.jpg") center top / cover no-repeat;
+      mask-image: none;
+      mix-blend-mode: screen;
+    }
+
+    body::after {
+      opacity: .12;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        radial-gradient(circle at 50% 0%, rgba(255,177,0,.08), transparent 34%);
+      background-size: 86px 86px, 86px 86px, auto;
+      mix-blend-mode: screen;
+    }
+
+    .nav {
+      background: rgba(10,7,16,.82);
+      border-bottom-color: rgba(255,255,255,.08);
+      box-shadow: 0 10px 28px rgba(0,0,0,.28);
+    }
+
+    .hero-landing {
+      background:
+        linear-gradient(90deg, rgba(10,7,16,.9) 0%, rgba(10,7,16,.58) 43%, rgba(10,7,16,.22) 68%, rgba(10,7,16,.62) 100%),
+        linear-gradient(180deg, rgba(10,7,16,.3) 0%, rgba(10,7,16,.88) 100%),
+        url("assets/ff-event-bg.jpg") center / cover no-repeat;
+    }
+
+    .hero-landing::before {
+      opacity: .75;
+      background:
+        radial-gradient(circle at 76% 28%, rgba(25,216,255,.16), transparent 25%),
+        radial-gradient(circle at 28% 70%, rgba(255,154,0,.1), transparent 22%),
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+      background-size: auto, auto, 86px 100%;
+    }
+
+    .hero-stage-summary,
+    .route-info-card,
+    .stage-detail,
+    .mission,
+    .crate,
+    .final-panel {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.012)),
+        rgba(255,255,255,.02);
+      border-color: rgba(255,255,255,.08);
+      box-shadow: 0 18px 46px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.04);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-stage-summary {
+      border-left-color: rgba(255,177,0,.82);
+      background:
+        linear-gradient(90deg, rgba(255,154,0,.07), rgba(255,255,255,.018)),
+        rgba(255,255,255,.02);
+    }
+
+    .route-info-card {
+      border-color: rgba(255,255,255,.16);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.028)),
+        rgba(13,9,20,.72);
+    }
+
+    .route-node {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.018)),
+        rgba(10,7,16,.58);
+      border-color: rgba(255,255,255,.16);
+      box-shadow: 0 14px 34px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .route-node:hover,
+    .route-node:focus-visible,
+    .route-node.active {
+      background:
+        linear-gradient(135deg, rgba(255,154,0,.2), rgba(255,255,255,.035)),
+        rgba(10,7,16,.66);
+      box-shadow: 0 0 28px rgba(255,154,0,.26), 0 18px 42px rgba(0,0,0,.38);
+    }
+
+    .stage-section {
+      background:
+        linear-gradient(180deg, rgba(10,7,16,.12), rgba(10,7,16,.3));
+    }
+
+    .stage-section::before {
+      background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 64%, #FFB100), transparent);
+      box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 38%, transparent);
+    }
+
+    .stage-detail {
+      background:
+        radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 34%),
+        linear-gradient(135deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
+        rgba(255,255,255,.02);
+      border-left-color: color-mix(in srgb, var(--accent) 72%, #FFB100);
+    }
+
+    .mission {
+      background:
+        radial-gradient(circle at 88% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 32%),
+        linear-gradient(135deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
+        rgba(255,255,255,.02);
+      border-top-color: color-mix(in srgb, var(--accent) 74%, #FFB100);
+    }
+
+    .mission:hover,
+    .crate:hover {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.018)),
+        rgba(255,255,255,.025);
+      box-shadow: 0 0 22px color-mix(in srgb, var(--accent, var(--supply-accent, #FFB100)) 18%, transparent), 0 20px 48px rgba(0,0,0,.4);
+    }
+
+    .mission-link,
+    .supply-action {
+      background: rgba(255,177,0,.12);
+      border-color: rgba(255,177,0,.48);
+      color: #fff7e8;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    .mission-link:hover,
+    .mission-link:focus-visible,
+    .supply-action:hover {
+      background: rgba(255,177,0,.22);
+      border-color: rgba(255,177,0,.72);
+      box-shadow: 0 0 16px rgba(255,177,0,.16), inset 0 1px 0 rgba(255,255,255,.1);
+    }
+
+    .supply {
+      background:
+        linear-gradient(180deg, rgba(10,7,16,.18), rgba(10,7,16,.34));
+    }
+
+    .crate {
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--supply-accent, #FFB100) 7%, transparent), transparent 42%),
+        linear-gradient(135deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
+        rgba(255,255,255,.02);
+      border-color: rgba(255,255,255,.08);
+    }
+
+    .supply-icon {
+      background: rgba(255,255,255,.025);
+      border-color: color-mix(in srgb, var(--supply-accent, #FFB100) 44%, rgba(255,255,255,.12));
+    }
+
+    .supply-main .reward {
+      color: #0A0710;
+      background: color-mix(in srgb, var(--supply-accent, #FFB100) 84%, #FFB100);
+    }
+
+    .supply-link {
+      border-bottom-color: rgba(255,255,255,.08);
+      color: rgba(255,247,232,.86);
+    }
+
+    .supply-link:hover {
+      color: var(--gold);
+      background: rgba(255,255,255,.018);
+    }
+
+    .final {
+      background:
+        linear-gradient(180deg, rgba(10,7,16,.18), rgba(10,7,16,.36));
+    }
+
+    .final-panel {
+      background:
+        radial-gradient(circle at 78% 20%, rgba(255,154,0,.1), transparent 28%),
+        linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.012)),
+        rgba(255,255,255,.02);
+    }
   </style>
 </head>
 <body class="loaded">
