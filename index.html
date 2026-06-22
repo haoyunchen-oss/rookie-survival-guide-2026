@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>研发战场生存指南</title>
+  <title>FF战场生存指南</title>
   <style>
     :root {
       --bg: #07030d;
@@ -3164,7 +3164,7 @@
     <section class="hero-landing" id="entry">
       <div class="hero-copy-panel" id="heroStagePanel">
         <div class="hero-title-block">
-          <h1>研发战场生存指南</h1>
+          <h1>FF战场生存指南</h1>
           <p class="hero-lead">欢迎加入Garena！<br>成长任务与项目补给，尽在这里。</p>
         </div>
 
@@ -3244,11 +3244,11 @@
         status: "UNLOCKED",
         time: "入职当天",
         reward: "Starter Access +100 EXP",
-        map: "完成装备补给与身份激活，领取属于你的新兵补给。",
+        map: "身份已激活！<br><br>快来领取你的新兵补给包，开始解锁职场新副本。",
         next: "领取作战装备",
         accent: "#ff3b2f",
         missions: [
-          ["探索 Garena 宇宙", "主动认识你的团队成员，通读新人手册，点击下方 OA 系统链接了解 G 社人事、福利政策和其他相关流程。", "+100 EXP", "http://oa.garena/", "点击此处"],
+          ["探索 Garena", "主动认识你的团队成员，通读新人手册，点击下方 OA 系统链接了解 G 社人事、福利政策和其他相关流程。", "+100 EXP", "http://oa.garena/", "点击此处"],
           ["领取作战装备", "完成 IT 设备、账号权限、工牌与办公系统配置。", "装备补给箱"]
         ]
       },
@@ -3260,12 +3260,11 @@
         time: "入职1个月",
         reward: "Squad Badge +300 EXP",
         map: "在这里，你将集结队友、解锁导师，完成新手训练营。",
-        next: "入职后30天：完成局内状态扫描",
+        next: "完成新手训练营",
         accent: "#ff6b00",
         missions: [
           ["战队集结", "与 Buddy / Mentor（导师）会面，并在一个月内对齐成长目标。", "Squad Badge"],
-          ["新手训练营", "完成新人培训，掌握研发战场的基础技能。<br><br>预计时间：7.13 - 7.17（见后续培训通知）", "Skill Tree Activated"],
-          ["局内状态扫描", "恭喜你入职满1个月！<br><br>分享你的入职体验、团队融入与工作体验，帮助我们持续优化新人培养旅程。", "Radar Scan Complete", "https://forms.gle/CooX8rv885HFa5od7", "开始扫描"]
+          ["新手训练营", "完成新人培训，掌握研发战场的基础技能。<br><br>预计时间：7.13 - 7.17（见后续培训通知）", "Skill Tree Activated"]
         ]
       },
       {
@@ -3284,18 +3283,17 @@
       },
       {
         id: "STAGE 04",
-        cn: "Booyah 对决",
+        cn: "Booyah时刻",
         en: "Final Showdown",
         status: "ENDGAME",
         time: "入职6个月",
         reward: "Core Developer Path Unlocked",
-        map: "回顾你的成长轨迹，展示你的作品，迎接属于自己的 Booyah 时刻。",
+        map: "回顾你的成长轨迹，展示你的作品，迎接属于自己的「Booyah」！",
         next: "Portfolio Boss Fight",
         accent: "#ffc247",
         missions: [
           ["试用期转正评估", "整理并展示你做过的关键任务、作品、复盘和收获。", "Portfolio Drop"],
-          ["Leader 午餐会", "与大组Leader共同复盘成长表现，盘点优势与挑战，规划下一阶段的发展路线。", "Growth Plan"],
-          ["Booyah 状态扫描", "恭喜你完成研发新人赛季！用 5 分钟回顾过去 180 天的成长体验，分享你的收获、挑战与未来期待，帮助我们持续优化新人培养旅程。", "Next Season", "https://forms.gle/6euLgk5r2yooRUSU8", "开始扫描"]
+          ["Leader 午餐会", "与大组Leader共同复盘成长表现，盘点优势与挑战，规划下一阶段的发展路线。", "Growth Plan"]
         ]
       }
     ];
@@ -3401,7 +3399,7 @@
 
       if (currentTitle) currentTitle.textContent = `${stageOrderNames[selectedStage]}：${stage.cn}`;
       if (stageTime) stageTime.textContent = stage.time;
-      if (stageDesc) stageDesc.textContent = `阶段说明：${stage.map}`;
+      if (stageDesc) stageDesc.innerHTML = `阶段说明：${stage.map}`;
       if (taskList) taskList.innerHTML = tasks.map((task, taskIndex) => `<li><span>${taskOrderNames[taskIndex]}：</span>${task}</li>`).join("");
 
       if (infoCard) {
