@@ -3146,6 +3146,23 @@
       max-width: none;
       display: block;
     }
+
+    .mission ul {
+      height: 120px;
+      min-height: 120px;
+      margin: 0;
+      padding: 0 0 0 18px;
+      overflow: auto;
+      color: rgba(255, 247, 232, .84);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.7;
+      scrollbar-width: thin;
+    }
+
+    .mission ul li + li {
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body class="loaded">
@@ -3192,8 +3209,8 @@
     <section class="section section-head-only" id="stages">
       <div class="section-head">
         <div>
-          <h2>阶段任务</h2>
-          <p>完成你的主线任务，逐步推进成长旅程。</p>
+          <h2>成长任务</h2>
+          <p>这里整理了入职后每个阶段，你的关键任务和安排。</p>
         </div>
       </div>
     </section>
@@ -3244,11 +3261,11 @@
         status: "UNLOCKED",
         time: "入职当天",
         reward: "Starter Access +100 EXP",
-        map: "身份已激活！<br><br>快来领取你的新兵补给包，开始解锁职场新副本。",
+        map: "身份已激活！<br>快来领取你的新兵补给包，开始解锁职场新副本。",
         next: "领取作战装备",
         accent: "#ff3b2f",
         missions: [
-          ["探索 Garena", "主动认识你的团队成员，通读新人手册，点击下方 OA 系统链接了解 G 社人事、福利政策和其他相关流程。", "+100 EXP", "http://oa.garena/", "点击此处"],
+          ["探索 Garena", "主动认识你的团队成员，获取新人手册，点击下方OA链接，跳转至入职指南界面。", "+100 EXP", "http://oa.garena/", "点击此处"],
           ["领取作战装备", "完成 IT 设备、账号权限、工牌与办公系统配置。", "装备补给箱"]
         ]
       },
@@ -3259,12 +3276,12 @@
         status: "ACTIVE",
         time: "入职1个月",
         reward: "Squad Badge +300 EXP",
-        map: "在这里，你将集结队友、解锁导师，完成新手训练营。",
+        map: "这一阶段，你会认识 Buddy / Mentor，开始熟悉基础的工作方式。",
         next: "完成新手训练营",
         accent: "#ff6b00",
         missions: [
-          ["战队集结", "与 Buddy / Mentor（导师）会面，并在一个月内对齐成长目标。", "Squad Badge"],
-          ["新手训练营", "完成新人培训，掌握研发战场的基础技能。<br><br>预计时间：7.13 - 7.17（见后续培训通知）", "Skill Tree Activated"]
+          ["Mentor / Buddy 初识", "和 Buddy / Mentor 建立联系，并在 1 个月内完成成长目标对齐。", "Squad Badge"],
+          ["新手训练营", "<ul><li>完成 e-learning《2026校招生成长计划》，时间：收到邮件后 1个月内完成。</li><li>参加《2026校招生成长计划——线下训练营》，时间：2天。</li></ul>", "Skill Tree Activated"]
         ]
       },
       {
@@ -3274,11 +3291,11 @@
         status: "COMING SOON",
         time: "入职2-5个月",
         reward: "Mini-Game 创作挑战赛 Badge",
-        map: "现在，你将正式进入项目实战，与队友共同完成真实研发任务。",
+        map: "从这一阶段开始，你会逐步进入项目实战，在任务推进中熟悉研发流程和团队协作。",
         next: "MiniGame 创新实战",
         accent: "#19d8ff",
         missions: [
-          ["中期回顾", "与导师/LM对齐你的主线任务，明确成长目标、关键挑战和阶段性里程碑。", "Personal Questline"]
+          ["中期回顾", "通过一次阶段回顾，和Mentor/直属经理一起梳理你的进展、挑战和接下来的重点方向。", "Personal Questline"]
         ]
       },
       {
@@ -3288,12 +3305,12 @@
         status: "ENDGAME",
         time: "入职6个月",
         reward: "Core Developer Path Unlocked",
-        map: "回顾你的成长轨迹，展示你的作品，迎接属于自己的「Booyah」！",
+        map: "这一阶段，你会回顾过去 6 个月的成长经历，整理自己的关键收获，并为下一阶段做好准备。",
         next: "Portfolio Boss Fight",
         accent: "#ffc247",
         missions: [
-          ["试用期转正评估", "整理并展示你做过的关键任务、作品、复盘和收获。", "Portfolio Drop"],
-          ["Leader 午餐会", "与大组Leader共同复盘成长表现，盘点优势与挑战，规划下一阶段的发展路线。", "Growth Plan"]
+          ["试用期转正评估", "回顾入职至今完成的重点工作，整理关键任务、阶段收获和成长体验，并与直属经理完成转正对话。", "Portfolio Drop"],
+          ["Leader 午餐会", "和大组 Leader、Peers 一起交流收获、挑战和下一阶段的发展方向。", "Growth Plan"]
         ]
       }
     ];
@@ -3387,6 +3404,11 @@
       return tasks;
     }
 
+    function renderMissionBody(content) {
+      const body = content.trim();
+      return body.startsWith("<ul") ? body : `<p>${body}</p>`;
+    }
+
     function renderHeroStage(index = selectedStage) {
       selectedStage = index;
       const stage = stageData[selectedStage];
@@ -3471,15 +3493,15 @@
               <article class="mission">
                 <small>${taskOrderNames[missionIndex]}</small>
                 <h3>${mission[0]}</h3>
-                <p>${mission[1]}</p>
+                ${renderMissionBody(mission[1])}
                 ${mission[3] ? `<a class="mission-link" href="${mission[3]}" target="_blank" rel="noopener noreferrer">${cleanButtonLabel(mission[4])}</a>` : ""}
               </article>
             `).join("")}
             ${index === 2 ? `
               <article class="mission event">
-                <small>${taskOrderNames[stage.missions.length]}</small>
+                <small>${taskOrderNames[stage.missions.length]}（可选）</small>
                 <h3>Mini-Game 创作挑战赛</h3>
-                <p>组建你的研发战队，在限定时间内完成从创意到Demo的全流程挑战。<br>这是研发新人赛季最重要的团队任务。</p>
+                <p>我们鼓励每一位研发校招生积极参与公司的 Mini-Game 创作挑战赛，和队友一起，在实战中体验从创意到 Demo 的完整过程。</p>
               </article>
             ` : ""}
           </div>
