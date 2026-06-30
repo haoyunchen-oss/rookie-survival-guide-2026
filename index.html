@@ -3148,11 +3148,11 @@
     }
 
     .mission ul {
-      height: 120px;
+      height: auto;
       min-height: 120px;
       margin: 0;
       padding: 0 0 0 18px;
-      overflow: auto;
+      overflow: visible;
       color: rgba(255, 247, 232, .84);
       font-size: 15px;
       font-weight: 500;
@@ -3210,7 +3210,7 @@
       <div class="section-head">
         <div>
           <h2>成长任务</h2>
-          <p>这里整理了入职后每个阶段，你的关键任务和安排。</p>
+          <p>这里整理了入职后每个阶段，会发生的一些关键事件。</p>
         </div>
       </div>
     </section>
@@ -3222,7 +3222,7 @@
     <section class="section supply fade-up" id="supply">
       <div class="section-head">
         <div>
-          <h2>新人作战档案补给区 #2026</h2>
+          <h2>补给中心</h2>
           <p>FF 项目介绍补给包已空投。这里汇总了新人快速进入战斗状态所需的职能介绍、专业训练资料、研发流程材料与项目知识。</p>
         </div>
       </div>
@@ -3276,12 +3276,12 @@
         status: "ACTIVE",
         time: "入职1个月",
         reward: "Squad Badge +300 EXP",
-        map: "这一阶段，你会认识 Buddy / Mentor，开始熟悉基础的工作方式。",
+        map: "这一阶段，你会认识你的团队成员、直属经理以及 Buddy 和 Mentor，开始熟悉基础的工作方式。",
         next: "完成新手训练营",
         accent: "#ff6b00",
         missions: [
-          ["Mentor / Buddy 初识", "和 Buddy / Mentor 建立联系，并在 1 个月内完成成长目标对齐。", "Squad Badge"],
-          ["新手训练营", "<ul><li>完成 e-learning《2026校招生成长计划》，时间：收到邮件后 1个月内完成。</li><li>参加《2026校招生成长计划——线下训练营》，时间：7.13-14+17下午。</li></ul>", "Skill Tree Activated"]
+          ["团队集结", "认识你的团队成员包括直属经理，和 Buddy / Mentor 建立联系，并在 1 个月内和直属经理完成成长目标对齐。", "Squad Badge"],
+          ["新手训练营", "<ul><li>完成 e-learning《2026校招生成长计划》，时间：收到邮件后 1个月内完成。</li><li>参加《线下训练营》，时间：7.13-14 + 17下午。</li></ul>", "Skill Tree Activated"]
         ]
       },
       {
@@ -3290,7 +3290,7 @@
         en: "Into The Wild",
         status: "COMING SOON",
         time: "入职2-5个月",
-        reward: "Mini-Game 创作挑战赛 Badge",
+        reward: "Mini-Game 创造挑战赛 Badge",
         map: "从这一阶段开始，你会逐步进入项目实战，在任务推进中熟悉研发流程和团队协作。",
         next: "MiniGame 创新实战",
         accent: "#19d8ff",
@@ -3356,7 +3356,7 @@
     const currentStageIndex = 1;
     const nextStageIndex = 2;
     const stageOrderNames = ["阶段一", "阶段二", "阶段三", "阶段四"];
-    const taskOrderNames = ["任务一", "任务二", "任务三", "任务四"];
+    const taskOrderNames = ["1", "2", "3", "4"];
     const supplyAccents = ["#FFB100", "#19D8FF", "#D14CFF", "#FF6A00"];
     const supplyIcons = [
       `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 18h28v20H10z"></path><path d="M16 18v-6h16v6"></path><path d="M10 25h28"></path><path d="M20 30h8"></path></svg>`,
@@ -3400,7 +3400,7 @@
 
     function getStageTasks(index) {
       const tasks = stageData[index].missions.map(mission => mission[0]);
-      if (index === 2) tasks.push("Mini-Game 创作挑战赛");
+      if (index === 2) tasks.push("Mini-Game 创造挑战赛");
       return tasks;
     }
 
@@ -3422,7 +3422,7 @@
       if (currentTitle) currentTitle.textContent = `${stageOrderNames[selectedStage]}：${stage.cn}`;
       if (stageTime) stageTime.textContent = stage.time;
       if (stageDesc) stageDesc.innerHTML = `阶段说明：${stage.map}`;
-      if (taskList) taskList.innerHTML = tasks.map((task, taskIndex) => `<li><span>${taskOrderNames[taskIndex]}：</span>${task}</li>`).join("");
+      if (taskList) taskList.innerHTML = tasks.map((task, taskIndex) => `<li><span>${taskOrderNames[taskIndex]}${selectedStage === 2 && taskIndex === 1 ? "（可选）" : ""}：</span>${task}</li>`).join("");
 
       if (infoCard) {
         infoCard.classList.add("updating");
@@ -3500,8 +3500,8 @@
             ${index === 2 ? `
               <article class="mission event">
                 <small>${taskOrderNames[stage.missions.length]}（可选）</small>
-                <h3>Mini-Game 创作挑战赛</h3>
-                <p>我们鼓励每一位研发校招生积极参与公司的 Mini-Game 创作挑战赛，和队友一起，在实战中体验从创意到 Demo 的完整过程。</p>
+                <h3>Mini-Game 创造挑战赛</h3>
+                <p>我们鼓励每一位研发校招生积极参与公司的 Mini-Game 创造挑战赛，和队友一起，在实战中体验从创意到 Demo 的完整过程。</p>
               </article>
             ` : ""}
           </div>
