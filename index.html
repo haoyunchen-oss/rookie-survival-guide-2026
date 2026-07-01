@@ -3166,6 +3166,18 @@
 
     html {
       scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    .mission p::-webkit-scrollbar,
+    .mission ul::-webkit-scrollbar,
+    .supply-items::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
     }
 
     .hero-copy-panel-centered {
@@ -3342,7 +3354,7 @@
         en: "Into The Wild",
         status: "COMING SOON",
         time: "入职2-5个月",
-        reward: "Mini-Game 创造挑战赛 Badge",
+        reward: "Mini-Game 创作挑战赛 Badge",
         map: "从这一阶段开始，你会逐步进入项目实战，在任务推进中熟悉研发流程和团队协作。",
         next: "MiniGame 创新实战",
         accent: "#19d8ff",
@@ -3456,7 +3468,7 @@
 
     function getStageTasks(index) {
       const tasks = stageData[index].missions.map(mission => mission[0]);
-      if (index === 2) tasks.push("Mini-Game 创造挑战赛");
+      if (index === 2) tasks.push("Mini-Game 创作挑战赛");
       return tasks;
     }
 
@@ -3549,8 +3561,9 @@
             ${index === 2 ? `
               <article class="mission event">
                 <small>${taskOrderNames[stage.missions.length]}（可选）</small>
-                <h3>Mini-Game 创造挑战赛</h3>
-                <p>我们鼓励每一位研发校招生积极参与公司的 Mini-Game 创造挑战赛，和队友一起，在实战中体验从创意到 Demo 的完整过程。</p>
+                <h3>Mini-Game 创作挑战赛</h3>
+                <p>我们鼓励你与队友协作，参与 Mini-Game 创作挑战赛，体验从创意到 Demo 的完整研发过程。<br>点击下方链接，查看往期优秀作品。</p>
+                <a class="mission-link" href="https://minigame.web.garenanow.com/" target="_blank" rel="noopener noreferrer">点击此处</a>
               </article>
             ` : ""}
           </div>
