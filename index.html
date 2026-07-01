@@ -3163,6 +3163,61 @@
     .mission ul li + li {
       margin-top: 8px;
     }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .hero-copy-panel-centered {
+      align-content: center;
+      justify-items: start;
+      padding-bottom: 72px;
+    }
+
+    .hero-copy-panel-centered .hero-title-block {
+      max-width: 720px;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      left: 50%;
+      bottom: 28px;
+      z-index: 2;
+      width: 42px;
+      height: 42px;
+      transform: translateX(-50%);
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 177, 0, .36);
+      background: rgba(10, 7, 16, .34);
+      clip-path: polygon(16% 0, 100% 0, 100% 72%, 74% 100%, 0 100%, 0 22%);
+      box-shadow: 0 0 18px rgba(255, 177, 0, .14), inset 0 1px 0 rgba(255,255,255,.08);
+      animation: scrollCueFloat 2.2s ease-in-out infinite;
+    }
+
+    .scroll-cue span {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-right: 2px solid var(--gold);
+      border-bottom: 2px solid var(--gold);
+      transform: rotate(45deg);
+      filter: drop-shadow(0 0 8px rgba(255, 177, 0, .45));
+    }
+
+    .scroll-cue span:first-child {
+      top: 10px;
+      opacity: .66;
+    }
+
+    .scroll-cue span:last-child {
+      top: 19px;
+    }
+
+    @keyframes scrollCueFloat {
+      0%, 100% { transform: translate(-50%, 0); opacity: .78; }
+      50% { transform: translate(-50%, -7px); opacity: 1; }
+    }
   </style>
 </head>
 <body class="loaded">
@@ -3179,17 +3234,10 @@
 
   <main>
     <section class="hero-landing" id="entry">
-      <div class="hero-copy-panel" id="heroStagePanel">
+      <div class="hero-copy-panel hero-copy-panel-centered" id="heroStagePanel">
         <div class="hero-title-block">
           <h1>FF战场生存指南</h1>
           <p class="hero-lead">欢迎加入Garena！<br>成长任务与项目补给，尽在这里。</p>
-        </div>
-
-        <div class="hero-stage-summary" aria-live="polite">
-          <p class="current-stage-line"><strong id="heroCurrentTitle">阶段二：跳伞着陆</strong></p>
-          <p class="hero-stage-time" id="heroStageTime"></p>
-          <p class="hero-stage-desc" id="heroStageDesc"></p>
-          <ol class="hero-task-list" id="heroTaskList"></ol>
         </div>
       </div>
 
@@ -3204,6 +3252,10 @@
         <button class="route-node route-node-4 locked" data-stage="3" type="button"><span>04</span><strong></strong></button>
         <article class="route-info-card" id="routeInfoCard"></article>
       </div>
+      <a class="scroll-cue" href="#stages" aria-label="前往成长任务">
+        <span></span>
+        <span></span>
+      </a>
     </section>
 
     <section class="section section-head-only" id="stages">
@@ -3223,7 +3275,7 @@
       <div class="section-head">
         <div>
           <h2>补给中心</h2>
-          <p>FF 项目介绍补给包已空投。这里汇总了新人快速进入战斗状态所需的职能介绍、专业训练资料、研发流程材料与项目知识。</p>
+          <p>这里汇集了研发新人快速进入工作状态所需的基础配置、项目知识、研发流程及协作规范。</p>
         </div>
       </div>
       <div class="supply-grid" id="supplyGrid"></div>
@@ -3265,8 +3317,8 @@
         next: "领取作战装备",
         accent: "#ff3b2f",
         missions: [
-          ["探索 Garena", "主动认识你的团队成员，获取新人手册，点击下方OA链接，跳转至入职指南界面。", "+100 EXP", "http://oa.garena/", "点击此处"],
-          ["领取作战装备", "完成 IT 设备、账号权限、工牌与办公系统配置。", "装备补给箱"]
+          ["探索 Garena", "主动认识你的团队成员，获取新人手册，点击下方 OA 链接，跳转至新人入职指南界面。", "+100 EXP", "http://oa.garena/?p=2505", "点击此处"],
+          ["领取作战装备", "完成 IT 设备、账号权限、工牌与办公系统配置。<br>点击下方 OA 链接，跳转至 IT 配置秘籍界面。", "装备补给箱", "http://oa.garena/?page_id=3342", "点击此处"]
         ]
       },
       {
@@ -3276,7 +3328,7 @@
         status: "ACTIVE",
         time: "入职1个月",
         reward: "Squad Badge +300 EXP",
-        map: "这一阶段，你会认识你的团队成员、直属经理以及 Mentor 和 Buddy，开始熟悉基础的工作方式。",
+        map: "这一阶段，你会认识你的团队，开始熟悉基础的工作方式。",
         next: "完成新手训练营",
         accent: "#ff6b00",
         missions: [
@@ -3317,41 +3369,45 @@
 
     const supplies = [
       {
-        title: "📦 新兵补给",
-        description: "完成基础环境配置，领取进入研发战场所需装备。",
+        title: "📦 权限开通与基础配置",
+        description: "",
         items: [
           { title: "基本工作软件及各类权限开通", url: "http://wiki.jingle.cn/pages/viewpage.action?pageId=32777660" },
           { title: "版本安装及 PT 相关", url: "http://wiki.jingle.cn/pages/viewpage.action?pageId=32784185" }
         ]
       },
       {
-        title: "🗺️ 战场情报",
-        description: "了解 Free Fire 项目背景、版本节奏与核心目标。",
+        title: "🗺️ 了解 Free Fire 项目与产品愿景",
+        description: "",
         items: [
           { title: "FF项目研发百科&规范", url: "https://wiki.garena.com/pages/viewpage.action?pageId=25201146" },
           { title: "产品战略 & 产品愿景", url: "https://wiki.garena.com/display/FF/Free+Fire+Home" },
         ]
       },
       {
-        title: "⚔️ 作战手册",
-        description: "掌握研发流程、版本规范与发布机制。",
+        title: "⚔️ 熟悉研发流程和规范",
+        description: "",
         items: [
-          { title: "版本节点定义与操作规范", url: "http://wiki.jingle.cn/pages/viewpage.action?pageId=94988212" },
-          { title: "版本送审相关", url: "http://wiki.jingle.cn/pages/viewpage.action?pageId=50615227" },
-          { title: "客户端热更相关", url: "http://wiki.jingle.cn/pages/viewpage.action?pageId=85922822" }
+          { title: "版本节点定义和规范", url: "https://wiki.garena.com/pages/viewpage.action?pageId=94988212" },
+          { title: "各部门负责人总览", url: "https://wiki.garena.com/pages/viewpage.action?pageId=134597365" },
+          { title: "Jira相关百科", url: "https://wiki.garena.com/pages/viewpage.action?pageId=157072993" },
+          { title: "版本送审百科", url: "https://wiki.garena.com/pages/viewpage.action?pageId=50615227" },
+          { title: "线上热更流程", url: "https://wiki.garena.com/pages/viewpage.action?pageId=150489838" }
         ]
       },
       {
-        title: "🎯 任务执行",
-        description: "了解需求流转与功能交付标准。",
+        title: "🎯 了解需求流转和重要会议",
+        description: "",
         items: [
-          { title: "数据需求相关", url: "http://wiki.jingle.cn/pages/viewpage.action?pageId=87865388" },
-          { title: "功能验收相关", url: "http://wiki.jingle.cn/pages/viewpage.action?pageId=72168224" }
+          { title: "需求提出流程", url: "https://wiki.garena.com/pages/viewpage.action?pageId=93673109" },
+          { title: "需求开发流程", url: "https://wiki.garena.com/pages/viewpage.action?pageId=232974311" },
+          { title: "风险管理机制", url: "https://wiki.garena.com/pages/viewpage.action?pageId=189096302" },
+          { title: "版本重要会议", url: "https://wiki.garena.com/pages/viewpage.action?pageId=72168224" }
         ]
       }
     ];
 
-    let openSupplyIndex = null;
+    const openSupplyIndexes = new Set();
 
     const currentStageIndex = 1;
     const nextStageIndex = 2;
@@ -3413,16 +3469,6 @@
       selectedStage = index;
       const stage = stageData[selectedStage];
       const infoCard = document.getElementById("routeInfoCard");
-      const currentTitle = document.getElementById("heroCurrentTitle");
-      const taskList = document.getElementById("heroTaskList");
-      const stageDesc = document.getElementById("heroStageDesc");
-      const stageTime = document.getElementById("heroStageTime");
-      const tasks = getStageTasks(selectedStage);
-
-      if (currentTitle) currentTitle.textContent = `${stageOrderNames[selectedStage]}：${stage.cn}`;
-      if (stageTime) stageTime.textContent = stage.time;
-      if (stageDesc) stageDesc.innerHTML = `阶段说明：${stage.map}`;
-      if (taskList) taskList.innerHTML = tasks.map((task, taskIndex) => `<li><span>${taskOrderNames[taskIndex]}${selectedStage === 2 && taskIndex === 1 ? "（可选）" : ""}：</span>${task}</li>`).join("");
 
       if (infoCard) {
         infoCard.classList.add("updating");
@@ -3448,13 +3494,12 @@
 
     function renderSupplies() {
       document.getElementById("supplyGrid").innerHTML = supplies.map((crate, index) => `
-        <article class="crate ${openSupplyIndex === index ? "open" : ""}" style="--supply-accent:${supplyAccents[index] || "#FFB100"}">
-          <button class="supply-toggle" type="button" onclick="toggleSupply(${index})" aria-expanded="${openSupplyIndex === index}">
+        <article class="crate ${openSupplyIndexes.has(index) ? "open" : ""}" style="--supply-accent:${supplyAccents[index] || "#FFB100"}">
+          <button class="supply-toggle" type="button" onclick="toggleSupply(${index})" aria-expanded="${openSupplyIndexes.has(index)}">
             <span class="supply-icon">${supplyIcons[index] || supplyIcons[0]}</span>
             <span class="supply-main">
               <span class="reward">补给 ${String(index + 1).padStart(2, "0")}</span>
               <h3>${formatSupplyTitle(crate.title)}</h3>
-              <p>${crate.description}</p>
             </span>
             <span class="supply-action">展开查看详情</span>
           </button>
@@ -3471,7 +3516,11 @@
     }
 
     function toggleSupply(index) {
-      openSupplyIndex = openSupplyIndex === index ? null : index;
+      if (openSupplyIndexes.has(index)) {
+        openSupplyIndexes.delete(index);
+      } else {
+        openSupplyIndexes.add(index);
+      }
       renderSupplies();
     }
 
